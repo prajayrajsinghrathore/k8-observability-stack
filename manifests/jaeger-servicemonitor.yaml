@@ -1,0 +1,19 @@
+# File: manifests/jaeger-servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: jaeger
+  namespace: ${NAMESPACE}
+  labels:
+    app.kubernetes.io/name: jaeger
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: jaeger
+  namespaceSelector:
+    matchNames:
+      - ${NAMESPACE}
+  endpoints:
+    - port: http-admin
+      interval: 30s
+      path: /metrics

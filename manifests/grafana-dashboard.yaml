@@ -1,0 +1,79 @@
+# File: manifests/grafana-dashboard.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-k8s-overview
+  namespace: ${NAMESPACE}
+  labels:
+    grafana_dashboard: "1"
+data:
+  k8s-overview.json: |
+    {
+      "annotations": {"list": []},
+      "editable": true,
+      "panels": [
+        {
+          "datasource": {"type": "prometheus", "uid": "${datasource}"},
+          "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "unit": "percent"}},
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+          "id": 1,
+          "targets": [{"expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)", "legendFormat": "{{instance}}", "refId": "A"}],
+          "title": "CPU Usage by Node",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "${datasource}"},
+          "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "unit": "percent"}},
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+          "id": 2,
+          "targets": [{"expr": "100 * (1 - ((node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes))", "legendFormat": "{{instance}}", "refId": "A"}],
+          "title": "Memory Usage by Node",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "${datasource}"},
+          "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "green", "value": null}]}}},
+          "gridPos": {"h": 8, "w": 6, "x": 0, "y": 8},
+          "id": 3,
+          "targets": [{"expr": "count(kube_pod_status_phase{phase=\"Running\"})", "refId": "A"}],
+          "title": "Running Pods",
+          "type": "stat"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "${datasource}"},
+          "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "green", "value": null}]}}},
+          "gridPos": {"h": 8, "w": 6, "x": 6, "y": 8},
+          "id": 4,
+          "targets": [{"expr": "count(kube_node_info)", "refId": "A"}],
+          "title": "Total Nodes",
+          "type": "stat"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "${datasource}"},
+          "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "green", "value": null}]}}},
+          "gridPos": {"h": 8, "w": 6, "x": 12, "y": 8},
+          "id": 5,
+          "targets": [{"expr": "count(kube_namespace_created)", "refId": "A"}],
+          "title": "Total Namespaces",
+          "type": "stat"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "${datasource}"},
+          "fieldConfig": {"defaults": {"thresholds": {"steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}]}}},
+          "gridPos": {"h": 8, "w": 6, "x": 18, "y": 8},
+          "id": 6,
+          "targets": [{"expr": "count(kube_pod_status_phase{phase=\"Failed\"}) or vector(0)", "refId": "A"}],
+          "title": "Failed Pods",
+          "type": "stat"
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 39,
+      "tags": ["kubernetes"],
+      "templating": {
+        "list": [{"name": "datasource", "query": "prometheus", "type": "datasource"}]
+      },
+      "time": {"from": "now-1h", "to": "now"},
+      "title": "Kubernetes Cluster Overview",
+      "uid": "k8s-overview"
+    }
