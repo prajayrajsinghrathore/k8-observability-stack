@@ -1,0 +1,8 @@
+# File: manifests/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ${NAMESPACE}
+  labels:
+    app.kubernetes.io/managed-by: observability-stack
+    ${ISTIO_LABEL}
