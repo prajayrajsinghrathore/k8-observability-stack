@@ -64,7 +64,7 @@ function Wait-ForDeployments {
     
     # Wait for StatefulSets
     $statefulsets = @(
-        @{ Name = "prometheus-prometheus"; Timeout = 180 },
+        @{ Name = "prometheus-prometheus-prometheus"; Timeout = 180 },
         @{ Name = "alertmanager-prometheus-alertmanager"; Timeout = 120 }
     )
     

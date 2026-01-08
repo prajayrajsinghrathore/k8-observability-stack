@@ -241,7 +241,3 @@ function Wait-ForCondition {
     
     throw "Timeout waiting for $Description after ${TimeoutSeconds}s"
 }
-
-# ============================================================
-# Functions are available via dot-sourcing
-# ============================================================
