@@ -217,7 +217,3 @@ $script:WARN_RESOURCE_QUOTA_FAILED = "Resource quota not applied (may require cl
 $script:INFO_LOCAL_NO_AUTH = "Local deployment: Authentication disabled for Prometheus and Grafana."
 
 $script:INFO_AKS_ENTRA_AUTH = "AKS deployment: Azure Entra ID authentication enabled for Grafana."
-
-# ============================================================
-# Variables are available via dot-sourcing
-# ============================================================

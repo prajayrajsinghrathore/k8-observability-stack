@@ -259,7 +259,7 @@ Write-Host ""
 Write-Host "ACCESS (via kubectl port-forward):" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "  Prometheus:" -ForegroundColor Yellow
-Write-Host "    kubectl port-forward svc/prometheus-kube-prometheus-prometheus -n $OBSERVABILITY_NAMESPACE 9090:9090"
+Write-Host "    kubectl port-forward svc/prometheus-prometheus -n $OBSERVABILITY_NAMESPACE 9090:9090"
 Write-Host "    http://localhost:9090"
 Write-Host ""
 Write-Host "  Grafana:" -ForegroundColor Yellow
@@ -267,7 +267,7 @@ Write-Host "    kubectl port-forward svc/prometheus-grafana -n $OBSERVABILITY_NA
 Write-Host "    http://localhost:3000"
 Write-Host ""
 Write-Host "  Alertmanager:" -ForegroundColor Yellow
-Write-Host "    kubectl port-forward svc/prometheus-kube-prometheus-alertmanager -n $OBSERVABILITY_NAMESPACE 9093:9093"
+Write-Host "    kubectl port-forward svc/prometheus-alertmanager -n $OBSERVABILITY_NAMESPACE 9093:9093"
 Write-Host "    http://localhost:9093"
 Write-Host ""
 Write-Host "  Jaeger:" -ForegroundColor Yellow
