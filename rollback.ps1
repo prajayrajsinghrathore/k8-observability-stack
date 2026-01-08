@@ -90,11 +90,15 @@ Write-Success "Prerequisites verified"
 
 # Helper function
 function Invoke-SafeHelmUninstall {
-    param([string]$ReleaseName, [string]$Ns)
+    param([string]$ReleaseName, [string]$Ns, [switch]$NoWait)
     $existing = helm list -n $Ns -q 2>$null | Where-Object { $_ -eq $ReleaseName }
     if ($existing) {
         Write-Info "Uninstalling Helm release: $ReleaseName..."
-        helm uninstall $ReleaseName -n $Ns --wait 2>$null
+        if ($NoWait) {
+            helm uninstall $ReleaseName -n $Ns 2>$null
+        } else {
+            helm uninstall $ReleaseName -n $Ns --wait 2>$null
+        }
         Write-Success "Removed: $ReleaseName"
     } else {
         Write-Info "Skipped (not found): $ReleaseName"
@@ -103,17 +107,19 @@ function Invoke-SafeHelmUninstall {
 
 # Phase 1: Remove Kiali
 Write-SectionHeader "Removing Kiali"
-Invoke-SafeHelmUninstall -ReleaseName "kiali-operator" -Ns $Namespace
 
+# Remove Kiali CR finalizers BEFORE uninstalling the operator
 $kialiCR = kubectl get kiali kiali -n $Namespace 2>$null
 if ($LASTEXITCODE -eq 0) {
-    Write-Info "Removing Kiali CR..."
+    Write-Info "Removing Kiali CR finalizers..."
     # Remove finalizers first to prevent hanging
-    $patchJson = '{"metadata":{"finalizers":null}}'
-    kubectl patch kiali kiali -n $Namespace -p $patchJson --type=merge 2>$null
-    Start-Sleep -Seconds 2
-    kubectl delete kiali kiali -n $Namespace --ignore-not-found=true --grace-period=0 --force 2>$null
+    kubectl patch kiali kiali -n $Namespace -p '{"metadata":{"finalizers":[]}}' --type=merge 2>$null
+    Write-Info "Deleting Kiali CR..."
+    kubectl delete kiali kiali -n $Namespace --ignore-not-found=true --timeout=30s 2>$null
 }
+
+# Now uninstall the operator without waiting (CR is already gone)
+Invoke-SafeHelmUninstall -ReleaseName "kiali-operator" -Ns $Namespace -NoWait
 
 kubectl delete crd kialis.kiali.io --ignore-not-found=true 2>$null
 Write-Success "Kiali removed"
