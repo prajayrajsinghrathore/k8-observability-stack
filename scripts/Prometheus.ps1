@@ -287,7 +287,7 @@ $grafanaAuth
       datasources:
         - name: Prometheus
           type: prometheus
-          url: http://prometheus-kube-prometheus-prometheus.$namespace.svc:9090
+          url: http://prometheus-prometheus.$namespace.svc:9090
           access: proxy
           isDefault: true
           editable: false

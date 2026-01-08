@@ -116,7 +116,7 @@ All services use ClusterIP. Access via port-forward:
 
 ```bash
 # Prometheus
-kubectl port-forward svc/prometheus-kube-prometheus-prometheus -n observability 9090:9090
+kubectl port-forward svc/prometheus-prometheus -n observability 9090:9090
 # http://localhost:9090
 
 # Grafana
@@ -124,7 +124,7 @@ kubectl port-forward svc/prometheus-grafana -n observability 3000:80
 # http://localhost:3000
 
 # Alertmanager
-kubectl port-forward svc/prometheus-kube-prometheus-alertmanager -n observability 9093:9093
+kubectl port-forward svc/prometheus-alertmanager -n observability 9093:9093
 # http://localhost:9093
 
 # Jaeger
